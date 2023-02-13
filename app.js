@@ -4,6 +4,8 @@ const ejs = require('ejs')
 const methodOverride = require('method-override');
 const path = require('path')
 const Post = require('./models/Post')
+const pageControllers = require('./controllers/pageControllers')
+const postControllers = require('./controllers/postControllers')
 
 
 const app = express()
@@ -20,65 +22,15 @@ app.use(express.json())
 app.use(methodOverride('_method', {methods: ['POST','GET']}))
 
 
-app.get('/', async (req,res) => {
-    const posts = await Post.find({}).sort({postDate: -1})
-    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
-    res.render("index", {
-        posts,
-        options
-    });
-})
+app.get('/', pageControllers.getAllPosts)
+app.get('/post/:id', pageControllers.getPostByID)
+app.get('/about', pageControllers.getAboutPage)
+app.get('/add_post', pageControllers.getAddPostPage)
+app.get('/post/edit/:id', pageControllers.getEditPage)
 
-app.get('/post/:id', async (req,res) => {
-    const post = await Post.findById(req.params.id)
-    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
-    res.render('post', {
-        post, 
-        options
-    })
-})
-
-app.get('/post/edit/:id', async (req,res) => {
-    const post = await Post.findById(req.params.id)
-    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
-    res.render('edit', {
-        post, 
-        options
-    })
-})
-
-app.put('/edit/:id', async (req,res) => {
-    const post = await Post.findById(req.params.id)
-    post.author = req.body.author
-    post.title = req.body.title
-    post.post = req.body.post
-    post.postDate = Date.now()
-    post.save()
-    res.redirect(`/post/${post.id}`)
-})
-
-app.delete('/delete/:id', async (req,res) => {
-    await Post.findByIdAndDelete(req.params.id)
-    res.redirect('/')
-})
-
-app.get('/about', (req,res) => {
-    res.render('about')
-})
-
-app.get('/add_post', (req,res) => {
-    res.render('add_post')
-})
-
-app.get('/post', (req,res) => {
-    res.render('post')
-})
-
-app.post('/add', async (req,res) => {
-    await Post.create(req.body)
-    await console.log(req.body, 'Added succesfully')
-    await res.redirect('/')
-})
+app.post('/add', postControllers.addPost)
+app.put('/edit/:id', postControllers.editPost)
+app.delete('/delete/:id', postControllers.deletePost)
 
 const port = 4000
 app.listen(port, () => {
