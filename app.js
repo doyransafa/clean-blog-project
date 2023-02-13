@@ -1,6 +1,7 @@
 const express = require('express')
 const mongoose = require("mongoose");
 const ejs = require('ejs')
+const methodOverride = require('method-override');
 const path = require('path')
 const Post = require('./models/Post')
 
@@ -16,10 +17,11 @@ app.set('view engine', 'ejs')
 app.use(express.static('public'))
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
+app.use(methodOverride('_method', {methods: ['POST','GET']}))
 
 
 app.get('/', async (req,res) => {
-    const posts = await Post.find({}).sort({postDate: -1}).limit(5)
+    const posts = await Post.find({}).sort({postDate: -1})
     const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
     res.render("index", {
         posts,
@@ -34,6 +36,30 @@ app.get('/post/:id', async (req,res) => {
         post, 
         options
     })
+})
+
+app.get('/post/edit/:id', async (req,res) => {
+    const post = await Post.findById(req.params.id)
+    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+    res.render('edit', {
+        post, 
+        options
+    })
+})
+
+app.put('/edit/:id', async (req,res) => {
+    const post = await Post.findById(req.params.id)
+    post.author = req.body.author
+    post.title = req.body.title
+    post.post = req.body.post
+    post.postDate = Date.now()
+    post.save()
+    res.redirect(`/post/${post.id}`)
+})
+
+app.delete('/delete/:id', async (req,res) => {
+    await Post.findByIdAndDelete(req.params.id)
+    res.redirect('/')
 })
 
 app.get('/about', (req,res) => {
