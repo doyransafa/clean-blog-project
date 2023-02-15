@@ -11,7 +11,7 @@ const postControllers = require('./controllers/postControllers')
 const app = express()
 mongoose.set('strictQuery', false);
 mongoose
-    .connect("mongodb://127.0.0.1:27017/cleanblog-test-db")
+    .connect("mongodb+srv://doyransafa:546800asd@cluster0.bz5lozb.mongodb.net/?retryWrites=true&w=majority")
     .then(() => console.log("Connected to CleanBlog Posts database!"));
 
 app.set('view engine', 'ejs')
@@ -32,7 +32,7 @@ app.post('/add', postControllers.addPost)
 app.put('/edit/:id', postControllers.editPost)
 app.delete('/delete/:id', postControllers.deletePost)
 
-const port = 4000
-app.listen(port, () => {
-    console.log(`${port} ile sunucuya baglanildi`)
+const PORT = process.env.PORT || 4000
+app.listen(PORT, () => {
+    console.log(`${PORT} ile sunucuya baglanildi`)
 })

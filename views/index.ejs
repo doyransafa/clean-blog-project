@@ -14,7 +14,7 @@
         <div class="col-lg-8 col-md-10 mx-auto">
           <div class="site-heading">
             <h1>Clean Blog</h1>
-            <span class="subheading">A Blog Theme by Start Bootstrap</span>
+            <span class="subheading">Patika.dev Project</span>
           </div>
         </div>
       </div>
@@ -41,7 +41,7 @@
             </h3>
           </a>
           <p class="post-meta">Posted by
-            <a href="#"><%= posts[i].author %></a>
+            <a href="/?author=<%= posts[i].author %>"><%= posts[i].author %></a>
             on <%= posts[i].postDate.toLocaleDateString('tr-TR', options) %></p>
         </div>
         <hr>
@@ -49,9 +49,9 @@
         <% } %>
 
         <!-- Pager -->
-        <div class="clearfix">
-          <a class="btn btn-primary float-right" href="#">Older Posts &rarr;</a>
-        </div>
+        <!-- <div class="clearfix">
+          <a class="btn btn-primary float-right" href="#">Show All Posts &rarr;</a>
+        </div> -->
       </div>
     </div>
   </div>
